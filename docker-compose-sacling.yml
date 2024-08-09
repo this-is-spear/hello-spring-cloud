@@ -1,0 +1,50 @@
+services:
+  hello-eureka-peer-1:
+    build: ./hello-eureka
+    ports:
+      - "8761:8761"
+    environment:
+      - HOST_NAME=hello-eureka-peer-1.com
+      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+    extra_hosts:
+      - hello-eureka-peer-1.com:host-gateway
+      - hello-eureka-peer-2.com:host-gateway
+
+  hello-eureka-peer-2:
+    build: ./hello-eureka
+    ports:
+      - "8762:8761"
+    environment:
+      - HOST_NAME=hello-eureka-peer-2.com
+      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+    extra_hosts:
+      - hello-eureka-peer-1.com:host-gateway
+      - hello-eureka-peer-2.com:host-gateway
+
+  hello-gateway:
+    build: ./hello-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+    depends_on:
+      - hello-eureka-peer-1
+      - hello-eureka-peer-2
+    extra_hosts:
+      - hello-eureka-peer-1.com:host-gateway
+      - hello-eureka-peer-2.com:host-gateway
+
+  hello-api:
+    build: ./hello-web
+    deploy:
+      replicas: 2
+    ports:
+      - "8900-9000:8081"
+    environment:
+      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+    depends_on:
+      - hello-eureka-peer-1
+      - hello-eureka-peer-2
+    extra_hosts:
+      - hello-eureka-peer-1.com:host-gateway
+      - hello-eureka-peer-2.com:host-gateway
