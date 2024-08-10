@@ -10,7 +10,6 @@ services:
       - eureka.client.fetch-registry=false
       - eureka.client.service-url.defaultZone=http://hello-eureka-peer-2.com:8762/eureka
       - eureka.instance.hostname=hello-eureka-peer-1.com
-#      - eureka.instance.registry.default-open-for-traffic-count=0
     extra_hosts:
       - hello-eureka-peer-1.com:host-gateway
       - hello-eureka-peer-2.com:host-gateway
@@ -26,7 +25,6 @@ services:
       - eureka.client.fetch-registry=false
       - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka
       - eureka.instance.hostname=hello-eureka-peer-2.com
-#      - eureka.instance.registry.default-open-for-traffic-count=0
     extra_hosts:
       - hello-eureka-peer-1.com:host-gateway
       - hello-eureka-peer-2.com:host-gateway

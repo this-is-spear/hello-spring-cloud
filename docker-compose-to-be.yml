@@ -4,8 +4,14 @@ services:
     ports:
       - "8761:8761"
     environment:
-      - HOST_NAME=hello-eureka-peer-1.com
-      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - server.port=8761
+      - spring.application.name=hello-eureka
+      - eureka.client.register-with-eureka=false
+      - eureka.client.fetch-registry=false
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.instance.hostname=hello-eureka-peer-1.com
+      # 임대(lease)가 취소되는 시점을 결정할 때 사용된다. 레플리카인 경우 0으로 설정 필요 See InstanceRegistryProperties
+      - eureka.instance.registry.default-open-for-traffic-count=0
     extra_hosts:
       - hello-eureka-peer-1.com:host-gateway
       - hello-eureka-peer-2.com:host-gateway
@@ -15,8 +21,14 @@ services:
     ports:
       - "8762:8761"
     environment:
-      - HOST_NAME=hello-eureka-peer-2.com
-      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - server.port=8761
+      - spring.application.name=hello-eureka
+      - eureka.client.register-with-eureka=false
+      - eureka.client.fetch-registry=false
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka
+      - eureka.instance.hostname=hello-eureka-peer-2.com
+      # 임대(lease)가 취소되는 시점을 결정할 때 사용된다. 레플리카인 경우 0으로 설정 필요 See InstanceRegistryProperties
+      - eureka.instance.registry.default-open-for-traffic-count=0
     extra_hosts:
       - hello-eureka-peer-1.com:host-gateway
       - hello-eureka-peer-2.com:host-gateway
