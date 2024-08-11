@@ -34,7 +34,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
@@ -49,7 +49,7 @@ services:
     ports:
       - "8900-9000:8081"
     environment:
-      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
@@ -62,9 +62,9 @@ services:
     deploy:
       replicas: 1
     ports:
-      - "9000-9100:8081"
+      - "9001-9100:8081"
     environment:
-      - EUREKA_DEFAULT_ZONE=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
