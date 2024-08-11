@@ -3,14 +3,19 @@ import { check, sleep } from 'k6';
 
 export const options = {
     vus: 1,
-    duration: '4m',
+    duration: '6m',
     rps: 10,
 };
 
 export default function () {
-    const res = http.get('http://localhost:8080/hello/');
+    const res1 = http.get('http://localhost:8080/hello/');
+    const res2 = http.get('http://localhost:8081/hello/');
 
-    check(res, {
+    check(res1, {
+        'status is 200': (r) => r.status === 200,
+    });
+
+    check(res2, {
         'status is 200': (r) => r.status === 200,
     });
 
