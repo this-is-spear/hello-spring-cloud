@@ -22,6 +22,17 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            statuses: INTERNAL_SERVER_ERROR
+            methods: GET
+            backoff:
+              firstBackoff: 1s
+              maxBackoff: 5s
+              factor: 2
+              basedOnPreviousValue: false
       routes:
         - id: hello-service
           uri: lb://API-HELLO
