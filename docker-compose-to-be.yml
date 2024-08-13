@@ -13,6 +13,7 @@ services:
       - eureka.instance.hostname=hello-eureka-peer-1
       # 임대(lease)가 취소되는 시점을 결정할 때 사용된다. 레플리카인 경우 0으로 설정 필요 See InstanceRegistryProperties
       - eureka.instance.registry.default-open-for-traffic-count=0
+      - TZ=Asia/Seoul
 
   hello-eureka-peer-2:
     build: ./hello-eureka
@@ -28,6 +29,7 @@ services:
       - eureka.instance.hostname=hello-eureka-peer-2
       # 임대(lease)가 취소되는 시점을 결정할 때 사용된다. 레플리카인 경우 0으로 설정 필요 See InstanceRegistryProperties
       - eureka.instance.registry.default-open-for-traffic-count=0
+      - TZ=Asia/Seoul
 
   hello-gateway:
     build: ./hello-gateway
@@ -38,15 +40,18 @@ services:
     environment:
       # fetching 타임을 줄여 런타임에 실시간으로 변경된 정보를 가져온다.
       - eureka.client.registry-fetch-interval-seconds=5
-      - eureka.client.service-url.defaultZone=http://host.docker.internal:8761/eureka, http://host.docker.internal:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka, http://hello-eureka-peer-2:8762/eureka
       # 유레카에서 변경되는 정보만 가져온다. See EurekaClientConfigBean 페치 사이클 변경에 쉽게 대응할 수 있다.
       - eureka.client.disable-delta=true
       - server.shutdown=graceful
+      - logging.level.com.netflix.discovery=DEBUG
+      - logging.level.org.springframework.cloud.netflix.eureka=DEBUG
+      - spring.cloud.gateway.httpclient.connect-timeout=10000
+      - spring.cloud.gateway.httpclient.response-timeout=5s
+      - TZ=Asia/Seoul
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
-    extra_hosts:
-      - host.docker.internal:host-gateway
 
   hello-api:
     build: ./hello-web
@@ -55,14 +60,15 @@ services:
     ports:
       - "8900-9000:8081"
     environment:
-      - eureka.client.service-url.defaultZone=http://host.docker.internal:8761/eureka, http://host.docker.internal:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka, http://hello-eureka-peer-2:8762/eureka
       - eureka.instance.prefer-ip-address=true
       - server.shutdown=graceful
+      - logging.level.com.netflix.discovery=DEBUG
+      - logging.level.org.springframework.cloud.netflix.eureka=DEBUG
+      - TZ=Asia/Seoul
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
-    extra_hosts:
-      - host.docker.internal:host-gateway
 
   hello-api-2:
     build: ./hello-web
@@ -71,11 +77,10 @@ services:
     ports:
       - "9001-9100:8081"
     environment:
-      - eureka.client.service-url.defaultZone=http://host.docker.internal:8761/eureka, http://host.docker.internal:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka, http://hello-eureka-peer-2:8762/eureka
       - eureka.instance.prefer-ip-address=true
       - server.shutdown=graceful
+      - TZ=Asia/Seoul
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
-    extra_hosts:
-      - host.docker.internal:host-gateway

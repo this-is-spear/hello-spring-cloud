@@ -8,11 +8,9 @@ services:
       - spring.application.name=hello-eureka
       - eureka.client.register-with-eureka=false
       - eureka.client.fetch-registry=false
-      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-2.com:8762/eureka
-      - eureka.instance.hostname=hello-eureka-peer-1.com
-    extra_hosts:
-      - hello-eureka-peer-1.com:host-gateway
-      - hello-eureka-peer-2.com:host-gateway
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-2:8762/eureka
+      - eureka.instance.hostname=hello-eureka-peer-1
+      - TZ=Asia/Seoul
 
   hello-eureka-peer-2:
     build: ./hello-eureka
@@ -23,11 +21,9 @@ services:
       - spring.application.name=hello-eureka
       - eureka.client.register-with-eureka=false
       - eureka.client.fetch-registry=false
-      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka
-      - eureka.instance.hostname=hello-eureka-peer-2.com
-    extra_hosts:
-      - hello-eureka-peer-1.com:host-gateway
-      - hello-eureka-peer-2.com:host-gateway
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka
+      - eureka.instance.hostname=hello-eureka-peer-2
+      - TZ=Asia/Seoul
 
   hello-gateway:
     build: ./hello-gateway
@@ -36,13 +32,11 @@ services:
     ports:
       - "8080-8081:8080"
     environment:
-      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka, http://hello-eureka-peer-2:8762/eureka
+      - TZ=Asia/Seoul
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
-    extra_hosts:
-      - hello-eureka-peer-1.com:host-gateway
-      - hello-eureka-peer-2.com:host-gateway
 
   hello-api:
     build: ./hello-web
@@ -51,13 +45,11 @@ services:
     ports:
       - "8900-9000:8081"
     environment:
-      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka, http://hello-eureka-peer-2:8762/eureka
+      - TZ=Asia/Seoul
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
-    extra_hosts:
-      - hello-eureka-peer-1.com:host-gateway
-      - hello-eureka-peer-2.com:host-gateway
 
   hello-api-2:
     build: ./hello-web
@@ -66,10 +58,8 @@ services:
     ports:
       - "9001-9100:8081"
     environment:
-      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1.com:8761/eureka,http://hello-eureka-peer-2.com:8762/eureka
+      - eureka.client.service-url.defaultZone=http://hello-eureka-peer-1:8761/eureka, http://hello-eureka-peer-2:8762/eureka
+      - TZ=Asia/Seoul
     depends_on:
       - hello-eureka-peer-1
       - hello-eureka-peer-2
-    extra_hosts:
-      - hello-eureka-peer-1.com:host-gateway
-      - hello-eureka-peer-2.com:host-gateway
